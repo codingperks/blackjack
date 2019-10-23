@@ -57,7 +57,7 @@ def drawcards(deck, playerhand, dealerhand, turn):
 # this function allows a player to hit or stick
 def drawagain(playerhand, dealerhand):
     print("player hand", playerhand)
-    print("dealer hand", dealerhand)
+    print("dealer hand:", dealerhand[0])
     while True:
         drawconfirm = str(input("Hit or stick?: "))
         if drawconfirm in stick or drawconfirm in hit:
@@ -69,20 +69,53 @@ def drawagain(playerhand, dealerhand):
             print("Please type Hit or Stick" + "\n")
             continue
 
+# this function generates a score for dealer and playerhand
 
-# for card draws after hitting or sticking
-def game(playerhand, dealerhand, action):
-    if action == hit:
-        playerhand.append(deck.pop(0))
-        dealerhand.append(deck.pop(0))
-        print("player hand", playerhand)
-        print("dealer hand", dealerhand)
-        return
-    elif action == stick:
-        dealerhand.append(deck.pop(0))
-        print("player hand", playerhand)
-        print("dealer hand", dealerhand)
-        return
+def playerscoring(playerhand):
+    playervalues = []
+    score = []
+    faces = ['J', 'K', 'Q', '10']
+    for i in playerhand:
+        playervalues.append(i.split(" ")[0])
+    for i in playervalues:
+        if i == 'A':
+            i = 11
+        elif i == 'K' or i == 'Q' or i == 'J':
+            i = 10
+        else:
+            i = int(i)
+        score.append(i)
+    playerscore = sum(score)
+    if playerscore > 21 and 11 in score:
+        ace = score.index(11)
+        print(ace)
+        score[ace] = 1
+        print(score)
+    playerscore = sum(score)
+    return playerscore
+
+def dealerscoring(dealerhand):
+    dealervalues = []
+    score = []
+    faces = ['J', 'K', 'Q', '10']
+    for i in dealerhand:
+        dealervalues.append(i.split(" ")[0])
+    for i in dealervalues:
+        if i == 'A':
+            i = 11
+        elif i == 'K' or i == 'Q' or i == 'J':
+            i = 10
+        else:
+            i = int(i)
+        score.append(i)
+    dealerscore = sum(score)
+    if dealerscore > 21 and 11 in score:
+        ace = score.index(11)
+        print(ace)
+        score[ace] = 1
+        print(score)
+    dealerscore = sum(score)
+    return dealerscore
 
 
 def main():
@@ -90,10 +123,29 @@ def main():
         turn = 1
         if playgame():
             drawcards(deck, playerhand, dealerhand, turn)
-            action = drawagain(playerhand, dealerhand)
-            game(playerhand, dealerhand, action)
+            while True:
+                action = drawagain(playerhand, dealerhand)
+                if action == hit:
+                    playerhand.append(deck.pop(0))
+                    continue
+                elif action == stick:
+                    print("STICK LOGIC")
+                    # dealergame
+                    break
+                break
+        if 21 > playerscoring(playerhand) > dealerscoring(dealerhand):
+            print(playerscoring(playerhand), dealerscoring(dealerhand), "win test")
+            break
+        elif playerscoring(playerhand) < dealerscoring(dealerhand) < 21:
+            print(playerscoring(playerhand), dealerscoring(dealerhand), "lose test")
+            print("YOU LOSE")
+            break
         else:
-            return
+            print(playerscoring(playerhand), dealerscoring(dealerhand), "lose test")
+            print("YOU LOSE")
+            break
+    else:
+        return
 
 
 if __name__ == "__main__":
