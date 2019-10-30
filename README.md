@@ -4,6 +4,7 @@ one player blackjack simulator, coded in python
   
 What the program currently allows for:      
     Opening menu to confirm that the user would like to use the program
+    
     Opening hand is drawn (one card of dealer is hidden)
     Player can hit or stick
         Hit commands draw a card for the player and then asks the player if they'd like to hit or stick
