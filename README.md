@@ -3,8 +3,8 @@
 one player blackjack simulator, coded in python
   
 What the program currently allows for:      
-    Opening menu to confirm that the user would like to use the program
-    
+
+    Opening menu to confirm that the user would like to use the program    
     Opening hand is drawn (one card of dealer is hidden)
     Player can hit or stick
         Hit commands draw a card for the player and then asks the player if they'd like to hit or stick
@@ -15,6 +15,7 @@ What the program currently allows for:
 	Once both the dealer and player have stuck, their scores are compared using blackjack scoring to reveal the winner
 	
 The scoring follows blackjack rules:
+
 	Dealer wins if any of the following occurs:
 		playerscore > 21
 		21 => dealerscore & dealerscore > playerscore
@@ -25,6 +26,7 @@ The scoring follows blackjack rules:
 		playerscore == dealerscore and dealerscore <=21 and playerscore <=21
   
 Functions:
+
 	 main(): contains blackjack game and option for player to repeat
 		 blackjack(): Runs blackjack sequence and logic
 		     create_deck(): creates and shuffles deck
@@ -39,6 +41,7 @@ Functions:
 
     
 long term to do:    
+
     Add betting functionality
     Clean up logic to improve efficiency
         Remove any duplicates
@@ -59,7 +62,8 @@ ARCHIVE
 
 one player blackjack simulator, coded in python
   
-What the program currently allows for:    
+What the program currently allows for: 
+
     Opening menu to confirm that the user would like to use the program
     Opening hand is drawn (one card of dealer is hidden)
     Player can hit or stick
@@ -67,6 +71,7 @@ What the program currently allows for:
         Stick commands score both hands and decides the winner
   
 Functions:
+
      playgame(): Asks player if they want to play, N: exits the program
      openinghand(): draws opening hands
      drawagain(): hit or stick option
@@ -75,6 +80,7 @@ Functions:
          
     
 long term to do:    
+
     Clean up logic to improve efficiency
     Add betting functionality
     Clean code
