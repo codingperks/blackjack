@@ -3,36 +3,38 @@
 # The player will have the option to hit or stick after being dealt two cards
 # The player wins if they are closer to 21 than the computer, without going over 21
 
+
 # random module used in order to draw cards from the deck
 import random
 
-# yes and no are defined for menu options
+# yes and no are defined for user input
 yes = ["Yes", "yes", "Y", "y"]
 no = ["No", "no", "N", "n"]
 
+# hit and stick lists are also defined for user input
 hit = ["Hit", "hit", "h", "H"]
 stick = ["Stick", "stick", "S", "s"]
 
+
 # Creating deck of cards
-suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs']
-numbers = [i for i in range(2, 11)] + ['A', 'K', 'Q', 'J']
-deck = []
+# this recreates the deck every repeat
+def create_deck():
+    global deck
+    deck = []
+    suits = ['Hearts', 'Diamonds', 'Spades', 'Clubs']
+    numbers = [i for i in range(2, 11)] + ['A', 'K', 'Q', 'J']
+    for suit in suits:
+        for number in numbers:
+            deck += [str(number) + " of " + suit]
 
-for suit in suits:
-    for number in numbers:
-        deck += [str(number) + " of " + suit]
-
-# Creating hands
-playerhand = []
-dealerhand = []
 
 # This is the initial menu
-def playgame():
+def play_game():
     print("Would you like to play Blackjack?")
     while True:
-        playconfirm = str(input("Yes or No?: "))
-        if playconfirm in yes or playconfirm in no:
-            if playconfirm in yes:
+        play_confirm = str(input("Yes or No?: "))
+        if play_confirm in yes or play_confirm in no:
+            if play_confirm in yes:
                 return True
             else:
                 return False
@@ -42,26 +44,22 @@ def playgame():
 
 
 # this function draws the opening hand
-def drawcards(deck, playerhand, dealerhand, turn):
+def opening_hand(deck):
     random.shuffle(deck)
-    if turn == 1:
-        for i in range(2):
-            playerhand.append((deck.pop(0)))
-            dealerhand.append((deck.pop(0)))
-    else:
-        playerhand.append(deck.pop(0))
-        dealerhand.append(deck.pop(0))
+    for i in range(2):
+        player_hand.append((deck.pop(0)))
+        dealer_hand.append((deck.pop(0)))
     return
 
 
 # this function allows a player to hit or stick
-def drawagain(playerhand, dealerhand):
-    print("player hand", playerhand)
-    print("dealer hand:", dealerhand[0])
+def draw_again():
+    print("player hand:", player_hand)
+    print("dealer hand: ['" + dealer_hand[0] + ", 'One face down']")
     while True:
-        drawconfirm = str(input("Hit or stick?: "))
-        if drawconfirm in stick or drawconfirm in hit:
-            if drawconfirm in stick:
+        draw_confirm = str(input("Hit or stick?: "))
+        if draw_confirm in stick or draw_confirm in hit:
+            if draw_confirm in stick:
                 return stick
             else:
                 return hit
@@ -69,15 +67,15 @@ def drawagain(playerhand, dealerhand):
             print("Please type Hit or Stick" + "\n")
             continue
 
-# this function generates a score for dealer and playerhand
 
-def playerscoring(playerhand):
-    playervalues = []
+# this function returns the score for the player
+def player_scoring():
+    player_values = []
     score = []
-    faces = ['J', 'K', 'Q', '10']
-    for i in playerhand:
-        playervalues.append(i.split(" ")[0])
-    for i in playervalues:
+    player_hand_names = player_hand[:]
+    for i in player_hand_names:
+        player_values.append(i.split(" ")[0])
+    for i in player_values:
         if i == 'A':
             i = 11
         elif i == 'K' or i == 'Q' or i == 'J':
@@ -85,22 +83,22 @@ def playerscoring(playerhand):
         else:
             i = int(i)
         score.append(i)
-    playerscore = sum(score)
-    if playerscore > 21 and 11 in score:
+    player_score = sum(score)
+    if player_score > 21 and 11 in score:
         ace = score.index(11)
-        print(ace)
         score[ace] = 1
-        print(score)
-    playerscore = sum(score)
-    return playerscore
+    player_score = sum(score)
+    return player_score
 
-def dealerscoring(dealerhand):
-    dealervalues = []
+
+# this function returns the score for the dealer
+def dealer_scoring():
+    dealer_values = []
     score = []
-    faces = ['J', 'K', 'Q', '10']
-    for i in dealerhand:
-        dealervalues.append(i.split(" ")[0])
-    for i in dealervalues:
+    dealer_hand_names = dealer_hand[:]
+    for i in dealer_hand_names:
+        dealer_values.append(i.split(" ")[0])
+    for i in dealer_values:
         if i == 'A':
             i = 11
         elif i == 'K' or i == 'Q' or i == 'J':
@@ -108,44 +106,106 @@ def dealerscoring(dealerhand):
         else:
             i = int(i)
         score.append(i)
-    dealerscore = sum(score)
-    if dealerscore > 21 and 11 in score:
+    dealer_score = sum(score)
+    if dealer_score > 21 and 11 in score:
         ace = score.index(11)
-        print(ace)
         score[ace] = 1
-        print(score)
-    dealerscore = sum(score)
-    return dealerscore
+    dealer_score = sum(score)
+    return dealer_score
 
 
+# this function compares both scores and prints a winner
+def win(player_score, dealer_score):
+    if player_score > 21:
+        print("DEALER")
+        return
+    elif player_score < dealer_score <= 21:
+        print("DEALER")
+        return
+    elif 21 > player_score > dealer_score:
+        print("PLAYER")
+        return
+    elif dealer_score > player_score and dealer_score > 21 and player_score <= 21:
+        print("PLAYER")
+        return
+    elif dealer_score == player_score and dealer_score <= 21 and player_score <= 21:
+        print("TIE")
+        return
+
+
+# this function chooses dealer action based on simple dealer logic rules (<17 is a hit)
+def dealer_game():
+    while dealer_scoring() < 17:
+        if dealer_scoring() < 17:
+            print("Dealer hits")
+            dealer_hand.append(deck.pop(0))
+            input("Press enter to continue:")
+            hands()
+            continue
+        else:
+            break
+    print("Dealer sticks")
+    input("Press enter to continue:")
+    hands()
+    return
+
+
+# this function prints player and dealer hands
+def hands():
+    print("Player hand:", player_hand)
+    print("Dealer hand:", dealer_hand)
+
+
+# this function runs the blackjack function and gives the option for player to restart
 def main():
     while True:
-        turn = 1
-        if playgame():
-            drawcards(deck, playerhand, dealerhand, turn)
-            while True:
-                action = drawagain(playerhand, dealerhand)
-                if action == hit:
-                    playerhand.append(deck.pop(0))
-                    continue
-                elif action == stick:
-                    print("STICK LOGIC")
-                    # dealergame
-                    break
-                break
-        if 21 > playerscoring(playerhand) > dealerscoring(dealerhand):
-            print(playerscoring(playerhand), dealerscoring(dealerhand), "win test")
-            break
-        elif playerscoring(playerhand) < dealerscoring(dealerhand) < 21:
-            print(playerscoring(playerhand), dealerscoring(dealerhand), "lose test")
-            print("YOU LOSE")
+        if blackjack() is False:
             break
         else:
-            print(playerscoring(playerhand), dealerscoring(dealerhand), "lose test")
-            print("YOU LOSE")
-            break
-    else:
-        return
+            replay = input("Would you like restart? ")
+            if replay in yes:
+                print("\n")
+                break
+            elif replay in no:
+                return None
+            else:
+                print("Please type yes or no")
+                print("\n")
+                continue
+    main()
+
+
+# this function controls blackjack sequencing and logic
+def blackjack():
+    create_deck()
+    while True:
+        global player_hand
+        global dealer_hand
+        player_hand = []
+        dealer_hand = []
+        opening_hand(deck)
+        if play_game():
+            while True:
+                action = draw_again()
+                if action == hit:
+                    player_hand.append(deck.pop(0))
+                    if player_scoring() > 21:
+                        print("YOU LOSE: BUST")
+                        hands()
+                        return None
+                    continue
+                elif action == stick:
+                    if player_scoring() > 21:
+                        print("YOU LOSE: BUST")
+                        hands()
+                        return None
+                    dealer_game()
+                    break
+            player_score = player_scoring()
+            dealer_score = dealer_scoring()
+            input("Press enter to reveal the winner:")
+            win(player_score, dealer_score)
+        break
 
 
 if __name__ == "__main__":
